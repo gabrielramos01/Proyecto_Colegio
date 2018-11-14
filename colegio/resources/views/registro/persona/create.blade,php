@@ -1,0 +1,5 @@
+@extends ('layouts.admin')
+@section ('bienvenido')
+    <h3>Create</h3>
+
+@stop
