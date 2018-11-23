@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Persona;
 use Illuminate\Http\Request;
+use Session;
 
 class PersonaController extends Controller
 {
@@ -15,7 +16,8 @@ class PersonaController extends Controller
     public function index()
     {
         //
-        return view ('layouts.admin ');
+        $personas = Persona::all();
+        return view ('layouts.indexpersona ',compact('personas'));
     }
 
     /**
@@ -26,25 +28,27 @@ class PersonaController extends Controller
     public function create()
     {
         //
+        return view ('layouts.createpersona ');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'nombre' => 'required',
+            'apellido' => 'required',
+            'fecha_nacimiento' => 'required',
+            'ci' => 'required',
+        ]);
+        
+        Persona::create($request->all());
+        
+        Session::flash('message','El registro se realizo correctamente');
+        return redirect()->route('layouts.indexpersona ');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Persona  $persona
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show(Persona $persona)
     {
         //
@@ -59,28 +63,33 @@ class PersonaController extends Controller
     public function edit(Persona $persona)
     {
         //
+        return view('layouts.editpersona',compact('persona'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Persona  $persona
-     * @return \Illuminate\Http\Response
-     */
+   
     public function update(Request $request, Persona $persona)
     {
         //
+        $request->validate([
+            'nombre' => 'required',
+            'apellido' => 'required',
+            'fecha_nacimiento' => 'required',
+            'ci' => 'required',
+        ]);
+        
+        $persona->update($request->all());
+
+        $personas = Persona::all();
+        return view ('layouts.indexpersona ',compact('personas'));
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Persona  $persona
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(Persona $persona)
     {
         //
+        $persona->delete();
+        $personas = Persona::all();
+        return view ('layouts.indexpersona ',compact('personas'));
     }
 }
